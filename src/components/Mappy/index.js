@@ -34,7 +34,7 @@ const Mappy = ({
   useEffect(() => {
     let draw;
     let snap;
-
+    
     const raster = new TileLayer({
       source: new OSM(),
     });
@@ -97,6 +97,7 @@ const Mappy = ({
       const extent = dragBox.getGeometry().getExtent();
       source.forEachFeatureIntersectingExtent(extent, (feature) => {
         feature.set('name', `feature n°${feature.ol_uid}`);
+        feature.set('id', feature.ol_uid);
         selectedFeatures.push(feature);
       });
       // handleFeature(selectedFeatures.getArray().map((feature) => feature.get('name')));
@@ -115,19 +116,24 @@ const Mappy = ({
       map.removeInteraction(snap);
       addInteractions();
     };
+    window.onmessage = (event) => {
+      if (event.data[0] === 'delete') {
+        source.getFeatures().forEach((feature) => feature.get('name') === event.data[1] && source.removeFeature(feature));
+      }
+    };
   }, []);
 
   return (
     <>
       <form className="form-inline">
-        <label> Geometry type & nbsp;</label> 
+        <label> Geometry type &nbsp;</label>
         <select id="type">
-          <option value="Point"> Point</option> 
-          <option value="LineString"> LineString </option> 
-          <option value="Polygon"> Polygon </option> 
+          <option value="Point"> Point</option>
+          <option value="LineString"> LineString </option>
+          <option value="Polygon"> Polygon </option>
           <option value="Circle"> Circle </option>
         </select>
-      </form> 
+      </form>
       <div
         id="map"
         style={

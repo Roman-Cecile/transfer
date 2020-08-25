@@ -1,4 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import {
+  Vector as VectorSource,
+} from 'ol/source';
 
 // == Import material UI
 import Paper from '@material-ui/core/Paper';
@@ -24,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
     zIndex: '20',
     padding: '0.8em',
   },
+  trash: {
+    position: 'sticky',
+    left: '2000em',
+  }
 }));
 
 const App = ({ featuresSelected, deleteFeature }) => {
@@ -32,6 +40,7 @@ const App = ({ featuresSelected, deleteFeature }) => {
     <>
       <Slide in={featuresSelected.length} direction="left">
         <Paper className={featuresSelected.length ? `${classes.paperStyle} paperStyle-active` : ' paperStyle '}>
+          <DeleteForeverIcon className={classes.trash} />
           <ul>
             {
             featuresSelected
@@ -40,7 +49,14 @@ const App = ({ featuresSelected, deleteFeature }) => {
                   className={classes.paperStyleLi}
                 >
                   {featureName}
-                  <CancelOutlinedIcon fontSize="small" color="secondary" onClick={(event) => deleteFeature(event, featureName)} />
+                  <CancelOutlinedIcon
+                    fontSize="small"
+                    color="secondary"
+                    onClick={(event) => {
+                      deleteFeature(event, featureName);
+                      window.postMessage(['delete', featureName]);
+                    }}
+                  />
                 </li>
               ))
               : null
