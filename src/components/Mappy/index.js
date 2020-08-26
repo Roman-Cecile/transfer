@@ -27,7 +27,8 @@ import {
 import {
   platformModifierKeyOnly,
 } from 'ol/events/condition';
-import { toStringXY } from 'ol/coordinate';
+import GeoJSON from 'ol/format/GeoJSON';
+import data from '../../../public/FT_Chambre_3857.geojson';
 
 import MenuCreate from '../MenuCreate';
 import ButtonEdit from '../ButtonEdit';
@@ -41,13 +42,13 @@ const Mappy = ({
     let draw;
     let snap;
     let modify;
-    const coord = [46.227638, 2.213749];
-    var out = toStringXY(coord);
 
     const raster = new TileLayer({
       source: new OSM(),
     });
-    const source = new VectorSource();
+    const source = new VectorSource({
+      features: new GeoJSON().readFeatures(data),
+    });
     const vector = new VectorLayer({
       source,
       style: new Style({
@@ -76,7 +77,9 @@ const Mappy = ({
         extent: [-1249198.2873332978, 5142345.212601059, 1849198.2873332978, 6657654.787398941]
       }),
     });
-    console.log(map.getView().calculateExtent());
+    map.getView().fit(source.getExtent()); // Permet de zoomer automatiquement sur la zone loadée
+    // console.log(map.getView().calculateExtent());
+    console.log(data);
     const select = new Select();
     map.addInteraction(select);
     const selectedFeatures = select.getFeatures();
