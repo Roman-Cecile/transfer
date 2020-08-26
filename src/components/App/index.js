@@ -1,8 +1,6 @@
 import React from 'react';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import {
-  Vector as VectorSource,
-} from 'ol/source';
+import { Vector as VectorSource } from 'ol/source';
 
 // == Import material UI
 import Paper from '@material-ui/core/Paper';
@@ -31,36 +29,44 @@ const useStyles = makeStyles((theme) => ({
   trash: {
     position: 'sticky',
     left: '2000em',
-  }
+  },
 }));
 
-const App = ({ featuresSelected, deleteFeature }) => {
+const App = ({ featuresSelected, deleteFeature, deleteAllFeatures }) => {
   const classes = useStyles();
   return (
     <>
-      <Slide in={featuresSelected.length} direction="left">
-        <Paper className={featuresSelected.length ? `${classes.paperStyle} paperStyle-active` : ' paperStyle '}>
-          <DeleteForeverIcon className={classes.trash} />
+      <Slide in={featuresSelected.length > 0} direction="left">
+        <Paper
+          className={
+            featuresSelected.length
+              ? `${classes.paperStyle} paperStyle-active`
+              : ' paperStyle '
+          }
+        >
+          <DeleteForeverIcon
+            className={classes.trash}
+            onClick={() => {
+              window.postMessage(['deleteAllFeatures']);
+              deleteAllFeatures();
+            }}
+          />
           <ul>
-            {
-            featuresSelected
+            {featuresSelected
               ? featuresSelected.map((featureName) => (
-                <li
-                  className={classes.paperStyleLi}
-                >
+                <li className={classes.paperStyleLi}>
                   {featureName}
                   <CancelOutlinedIcon
                     fontSize="small"
                     color="secondary"
                     onClick={(event) => {
                       deleteFeature(event, featureName);
-                      window.postMessage(['delete', featureName]);
+                      window.postMessage(['deleteOneFeature', featureName]);
                     }}
                   />
                 </li>
               ))
-              : null
-          }
+              : null}
           </ul>
         </Paper>
       </Slide>

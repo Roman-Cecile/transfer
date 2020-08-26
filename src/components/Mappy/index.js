@@ -117,8 +117,10 @@ const Mappy = ({
       addInteractions();
     };
     window.onmessage = (event) => {
-      if (event.data[0] === 'delete') {
+      if (event.data[0] === 'deleteOneFeature') {
         source.getFeatures().forEach((feature) => feature.get('name') === event.data[1] && source.removeFeature(feature));
+      } else if (event.data[0] === 'deleteAllFeatures') {
+        selectedFeatures.forEach((feature) => source.removeFeature(feature));
       }
     };
   }, []);

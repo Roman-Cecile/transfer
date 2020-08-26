@@ -1,5 +1,5 @@
 import { SAVE_FEATURES } from 'src/action/selectFeatureAction';
-import { DELETE_FEATURE } from 'src/action/deleteFeatureAction';
+import { DELETE_FEATURE, DELETE_ALL_FEATURES } from 'src/action/deleteFeatureAction';
 
 export const initialState = {
   features: [],
@@ -26,6 +26,11 @@ const featureReducer = (state = initialState, action = {}) => {
         features: [...state.features],
       };
     }
+    case DELETE_ALL_FEATURES:
+      return {
+        ...state,
+        features: [],
+      };
     default:
       return state;
   }
