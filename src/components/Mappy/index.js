@@ -29,13 +29,17 @@ import {
 } from 'ol/events/condition';
 
 import MenuCreate from '../MenuCreate';
+import ButtonEdit from '../ButtonEdit';
 
 const Mappy = ({
   handleFeature,
 }) => {
+  const [edit, setEdit] = React.useState(false);
+  const [create, setCreate] = React.useState(false)
   useEffect(() => {
     let draw;
     let snap;
+    let modify;
 
     const raster = new TileLayer({
       source: new OSM(),
@@ -69,10 +73,6 @@ const Mappy = ({
       }),
     });
 
-    const modify = new Modify({
-      source,
-    });
-    map.addInteraction(modify);
     const select = new Select();
     map.addInteraction(select);
     const selectedFeatures = select.getFeatures();
@@ -107,13 +107,23 @@ const Mappy = ({
       else if (event.data[0] === 'deleteAllFeatures') {
         selectedFeatures.forEach((feature) => source.removeFeature(feature));
       }
-      else if (event.data[0] === 'select' || 'escape') {
+      else if (event.data[0] === 'edit') {
+        setCreate(true);
+        modify = new Modify({
+          source,
+        });
+        map.addInteraction(modify);
+      }
+      else if (event.data[0] === 'select' || event.data[0] === 'escape') {
         const typeSelect = event.data[1];
         const addInteractions = () => {
           draw = new Draw({
             source,
             type: typeSelect,
 
+          });
+          draw.on('drawend', () => {
+            setEdit(true);
           });
           if (event.data[0] === 'select') {
             map.addInteraction(draw);
@@ -123,11 +133,13 @@ const Mappy = ({
             map.addInteraction(snap);
           }
           else if (event.data[0] === 'escape') {
+            setCreate(false)
             return draw.finishDrawing();
           }
         };
         map.removeInteraction(draw);
         map.removeInteraction(snap);
+        map.removeInteraction(modify);
         addInteractions();
       }
     };
@@ -144,14 +156,16 @@ const Mappy = ({
           <option value="Circle"> Circle </option>
         </select>
       </form> */}
-      <MenuCreate />
-
+      <MenuCreate disabled={create} />
+      {edit
+      && <ButtonEdit />}
       <div
         id="map"
         style={
       {
         width: '100%',
         height: '100vh',
+        marginTop: '-3em'
       }
     }
       />

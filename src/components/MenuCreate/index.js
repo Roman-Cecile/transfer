@@ -1,21 +1,18 @@
 import React from 'react';
 
 // Import Material UI
-import CreateIcon from '@material-ui/icons/Create';
-import { Button, Menu, MenuItem } from '@material-ui/core';
+import ControlPointIcon from '@material-ui/icons/ControlPoint';
+import { Fab, Menu, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   button: {
-    position: 'fixed',
-    zIndex: '200',
-    borderRadius: '50%',
-    height: '4em',
     top: '20em',
     left: '2em',
+    zIndex: '200',
   },
 });
-const MenuCreate = () => {
+const MenuCreate = ({disabled}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -34,14 +31,16 @@ const MenuCreate = () => {
   const classes = useStyles();
   return (
     <>
-      <Button
+      <Fab
         variant="contained"
         color="secondary"
+        aria-label="add"
         className={classes.button}
         onClick={handleClick}
+        disabled={disabled}
       >
-        <CreateIcon />
-      </Button>
+        <ControlPointIcon />
+      </Fab>
       <Menu
         anchorEl={anchorEl}
         keepMounted
