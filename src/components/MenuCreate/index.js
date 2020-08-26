@@ -25,7 +25,7 @@ const MenuCreate = ({disabled}) => {
   return (
     <>
       <Fab
-        variant="contained"
+        variant="extended"
         color="secondary"
         aria-label="add"
         onClick={handleClick}

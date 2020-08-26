@@ -28,22 +28,21 @@ import {
   platformModifierKeyOnly,
 } from 'ol/events/condition';
 import GeoJSON from 'ol/format/GeoJSON';
+import * as olControl from 'ol/control';
 import data from '../../../public/FT_Chambre_3857.geojson';
 
-import MenuCreate from '../MenuCreate';
-import ButtonEdit from '../ButtonEdit';
 import SpeedDial from '../SpeedDial';
+import './style.scss';
 
 const Mappy = ({
   handleFeature,
 }) => {
   const [edit, setEdit] = React.useState(false);
-  const [create, setCreate] = React.useState(false)
+  const [create, setCreate] = React.useState(false);
   useEffect(() => {
     let draw;
     let snap;
     let modify;
-
     const raster = new TileLayer({
       source: new OSM(),
     });
@@ -72,15 +71,17 @@ const Mappy = ({
     const map = new Map({
       layers: [raster, vector],
       target: 'map',
+      controls: olControl.defaults({rotate: false}),
       view: new View({
         center: [300000, 5900000],
         zoom: 6.6,
-        extent: [-1249198.2873332978, 5142345.212601059, 1849198.2873332978, 6657654.787398941]
+        extent: [-1249198.2873332978, 5142345.212601059, 1849198.2873332978, 6657654.787398941],
       }),
     });
+    
+
     map.getView().fit(source.getExtent()); // Permet de zoomer automatiquement sur la zone loadée
     // console.log(map.getView().calculateExtent());
-    console.log(data);
     const select = new Select();
     map.addInteraction(select);
     const selectedFeatures = select.getFeatures();
@@ -141,7 +142,7 @@ const Mappy = ({
             map.addInteraction(snap);
           }
           else if (event.data[0] === 'escape') {
-            setCreate(false)
+            setCreate(false);
             return draw.finishDrawing();
           }
         };

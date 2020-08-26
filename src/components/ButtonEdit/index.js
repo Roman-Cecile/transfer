@@ -18,7 +18,7 @@ const ButtonEdit = () => {
   return (
     <>
       <Fab
-        variant="contained"
+        variant="extended"
         color="secondary"
         onClick={() => {
           window.postMessage(['edit']);

@@ -1,0 +1,38 @@
+.ol-control {
+    display: flex;
+    justify-content: flex-end !important;
+    align-content: flex-start !important;
+
+    & ul{
+        position: fixed;
+        bottom: 0em;
+        right: 0em;
+        background-color: white;
+        padding: 0.5em 0.5em 0.7em 0.5em;
+        border-top-left-radius: 8px;
+
+    }
+
+    & button {
+        margin: 0.5em;
+
+       
+    }
+}
+
+.ol-zoom{
+    margin: 2em 4em;
+    &-in, &-out{
+        padding: 0.2em 0.5em;
+        background-color: #3f51b5c9;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        font-size: large;
+        font-weight: bolder;
+    }
+}
+
+.ol-uncollapsible button {
+    display: none;
+}
