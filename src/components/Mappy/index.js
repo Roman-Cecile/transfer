@@ -28,13 +28,15 @@ import {
   platformModifierKeyOnly,
 } from 'ol/events/condition';
 
+import MenuCreate from '../MenuCreate';
+
 const Mappy = ({
   handleFeature,
 }) => {
   useEffect(() => {
     let draw;
     let snap;
-    
+
     const raster = new TileLayer({
       source: new OSM(),
     });
@@ -67,20 +69,6 @@ const Mappy = ({
       }),
     });
 
-    const typeSelect = document.getElementById('type');
-
-    function addInteractions() {
-      draw = new Draw({
-        source,
-        type: typeSelect.value,
-
-      });
-      map.addInteraction(draw);
-      snap = new Snap({
-        source,
-      });
-      map.addInteraction(snap);
-    }
     const modify = new Modify({
       source,
     });
@@ -111,23 +99,43 @@ const Mappy = ({
     dragBox.on('boxstart', () => {
       selectedFeatures.clear();
     });
-    typeSelect.onchange = () => {
-      map.removeInteraction(draw);
-      map.removeInteraction(snap);
-      addInteractions();
-    };
+
     window.onmessage = (event) => {
       if (event.data[0] === 'deleteOneFeature') {
         source.getFeatures().forEach((feature) => feature.get('name') === event.data[1] && source.removeFeature(feature));
-      } else if (event.data[0] === 'deleteAllFeatures') {
+      }
+      else if (event.data[0] === 'deleteAllFeatures') {
         selectedFeatures.forEach((feature) => source.removeFeature(feature));
+      }
+      else if (event.data[0] === 'select' || 'escape') {
+        const typeSelect = event.data[1];
+        const addInteractions = () => {
+          draw = new Draw({
+            source,
+            type: typeSelect,
+
+          });
+          if (event.data[0] === 'select') {
+            map.addInteraction(draw);
+            snap = new Snap({
+              source,
+            });
+            map.addInteraction(snap);
+          }
+          else if (event.data[0] === 'escape') {
+            return draw.finishDrawing();
+          }
+        };
+        map.removeInteraction(draw);
+        map.removeInteraction(snap);
+        addInteractions();
       }
     };
   }, []);
 
   return (
     <>
-      <form className="form-inline">
+      {/* <form className="form-inline">
         <label> Geometry type &nbsp;</label>
         <select id="type">
           <option value="Point"> Point</option>
@@ -135,7 +143,9 @@ const Mappy = ({
           <option value="Polygon"> Polygon </option>
           <option value="Circle"> Circle </option>
         </select>
-      </form>
+      </form> */}
+      <MenuCreate />
+
       <div
         id="map"
         style={
