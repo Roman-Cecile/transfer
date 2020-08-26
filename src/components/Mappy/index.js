@@ -32,6 +32,7 @@ import data from '../../../public/FT_Chambre_3857.geojson';
 
 import MenuCreate from '../MenuCreate';
 import ButtonEdit from '../ButtonEdit';
+import SpeedDial from '../SpeedDial';
 
 const Mappy = ({
   handleFeature,
@@ -154,25 +155,17 @@ const Mappy = ({
 
   return (
     <>
-      {/* <form className="form-inline">
-        <label> Geometry type &nbsp;</label>
-        <select id="type">
-          <option value="Point"> Point</option>
-          <option value="LineString"> LineString </option>
-          <option value="Polygon"> Polygon </option>
-          <option value="Circle"> Circle </option>
-        </select>
-      </form> */}
-      <MenuCreate disabled={create} />
-      {edit
-      && <ButtonEdit />}
+
+      {/* <MenuCreate disabled={create} /> */}
+      <SpeedDial disabledCreate={create} disabledEdit={edit} />
+      {/* {edit
+      && <ButtonEdit />} */}
       <div
         id="map"
         style={
       {
         width: '100%',
         height: '100vh',
-        marginTop: '-3em'
       }
     }
       />

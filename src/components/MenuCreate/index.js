@@ -5,13 +5,7 @@ import ControlPointIcon from '@material-ui/icons/ControlPoint';
 import { Fab, Menu, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles({
-  button: {
-    top: '20em',
-    left: '2em',
-    zIndex: '200',
-  },
-});
+
 const MenuCreate = ({disabled}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -28,14 +22,12 @@ const MenuCreate = ({disabled}) => {
       window.postMessage(['escape']);
     }
   });
-  const classes = useStyles();
   return (
     <>
       <Fab
         variant="contained"
         color="secondary"
         aria-label="add"
-        className={classes.button}
         onClick={handleClick}
         disabled={disabled}
       >

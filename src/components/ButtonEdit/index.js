@@ -4,22 +4,15 @@ import CreateIcon from '@material-ui/icons/Create';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
-  button: {
-    position: 'fixed',
-    zIndex: '200',
-    borderRadius: '50%',
-    height: '4em',
-    top: '30em',
-    left: '2em',
-  },
+  
 });
 
 const ButtonEdit = () => {
   const classes = useStyles();
-  const [active, setActive] = React.useState(true);
+  const [isActive, setIsActive] = React.useState(true);
   window.addEventListener('keydown', (event) => {
     if (event.keyCode === 27) {
-      setActive(false);
+      setIsActive(false);
     }
   });
   return (
@@ -27,11 +20,10 @@ const ButtonEdit = () => {
       <Fab
         variant="contained"
         color="secondary"
-        className={classes.button}
         onClick={() => {
           window.postMessage(['edit']);
         }}
-        disabled={active}
+        disabled={isActive}
       >
         <CreateIcon />
       </Fab>
