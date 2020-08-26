@@ -27,6 +27,7 @@ import {
 import {
   platformModifierKeyOnly,
 } from 'ol/events/condition';
+import { toStringXY } from 'ol/coordinate';
 
 import MenuCreate from '../MenuCreate';
 import ButtonEdit from '../ButtonEdit';
@@ -40,6 +41,8 @@ const Mappy = ({
     let draw;
     let snap;
     let modify;
+    const coord = [46.227638, 2.213749];
+    var out = toStringXY(coord);
 
     const raster = new TileLayer({
       source: new OSM(),
@@ -68,11 +71,12 @@ const Mappy = ({
       layers: [raster, vector],
       target: 'map',
       view: new View({
-        center: [-11000000, 4600000],
-        zoom: 4,
+        center: [300000, 5900000],
+        zoom: 6.6,
+        extent: [-1249198.2873332978, 5142345.212601059, 1849198.2873332978, 6657654.787398941]
       }),
     });
-
+    console.log(map.getView().calculateExtent());
     const select = new Select();
     map.addInteraction(select);
     const selectedFeatures = select.getFeatures();
