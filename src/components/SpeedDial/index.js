@@ -1,21 +1,58 @@
 import React from 'react';
-// import { RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
-import {SpeedDial, SpeedDialIcon, SpeedDialAction} from '@material-ui/lab';
-import { makeStyles } from '@material-ui/core/styles';
-import MenuCreate from '../MenuCreate';
-import ButtonEdit from '../ButtonEdit';
+import {
+  SpeedDial,
+  SpeedDialIcon,
+  SpeedDialAction,
+} from '@material-ui/lab';
+import {
+  makeStyles,
+  withStyles,
+} from '@material-ui/core/styles';
+import {
+  Gesture as GestureIcon,
+  Send as SendIcon,
+  Drafts as DraftsIcon,
+  KeyboardArrowDown as KeyboardArrowDownIcon,
+} from '@material-ui/icons';
 
+import MenuCreate from './MenuCreate';
+import ButtonEdit from './ButtonEdit';
 
 const useStyles = makeStyles((theme) => ({
-  speedDial: {
-    position: 'fixed',
-    left: '2em',
-    bottom: '3em',
+  speed: {
+    margin: '2em 0.3em',
+  },
+  buttonText: {
+    marginLeft: '1em',
+    marginRight: '0.5em',
+  },
+  button: {
+    width: '100%',
+    margin: '0.5em auto',
+  },
+  listMenuItem: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  menuIcon: {
+    margin: '0.5em',
   },
 }));
 
-const SpeedDialButton = ({disabledCreate, disabledEdit}) => {
+// const StyledMenuItem = withStyles((theme) => ({
+//   // root: {
+//   //   '&:focus': {
+//   //     backgroundColor: theme.palette.primary.main,
+//   //     '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+//   //       color: theme.palette.common.white,
+//   //     },
+//   //   },
+//   // },
+// }))(MenuItem);
+
+const SpeedDialButton = ({ disabledCreate, disabledEdit, drawerState }) => {
   const [open, setOpen] = React.useState(false);
+  
   const handleClose = () => {
     setOpen(false);
   };
@@ -30,24 +67,27 @@ const SpeedDialButton = ({disabledCreate, disabledEdit}) => {
   const classes = useStyles();
   return (
     <>
-      <SpeedDial
-        ariaLabel="SpeedDial example"
-        className={classes.speedDial}
-        icon={<SpeedDialIcon />}
-        onClose={handleClose}
-        onOpen={handleOpen}
-        open={open}
-        direction="up"
-      >
-        {actions.map((action) => (
-          <SpeedDialAction
-            key={action.name}
-            icon={action.icon}
-            tooltipTitle={action.name}
-            onClick={handleClose}
-          />
-        ))}
-      </SpeedDial>
+      {!drawerState
+        && (
+          <SpeedDial
+            className={classes.speed}
+            ariaLabel="SpeedDial"
+            icon={<GestureIcon />}
+            onClose={handleClose}
+            onOpen={handleOpen}
+            open={open}
+            direction="down"
+          >
+            {actions.map((action) => (
+              <SpeedDialAction
+                key={action.name}
+                icon={action.icon}
+                tooltipTitle={action.name}
+                onClick={handleClose}
+              />
+            ))}
+          </SpeedDial>
+        )}
     </>
   );
 };
