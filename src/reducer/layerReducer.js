@@ -10,7 +10,8 @@ const LayerReducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case SAVE_LAYERS: {
       const layerInState = state.layers;
-      layerInState.push(action.layers);
+      const newLayer = { name: action.layerName, extent: action.layerExtent };
+      layerInState.push(newLayer);
       return {
         ...state,
         layers: [...layerInState],

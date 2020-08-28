@@ -215,6 +215,7 @@ const Mappy = ({
         new VectorLayer({
           source: vectorSource,
           name: event.file.name,
+          extent: event.projection.getExtent(),
           style: new Style({
             fill: new Fill({
               color: 'rgba(255, 255, 255, 0.2)',
@@ -233,8 +234,9 @@ const Mappy = ({
         }),
       );
       console.log(event);
-      const layers = event.file.name
-      handleLayers(layers);
+      const layerName = event.file.name;
+      const layerExtent = event.projection.getExtent();
+      handleLayers(layerName, layerExtent);
 
       map.getView().fit(vectorSource.getExtent());
     });
@@ -315,6 +317,9 @@ const Mappy = ({
         map.removeInteraction(snap);
         map.removeInteraction(modify);
         addInteractions();
+      }
+      else if (event.data[0] === 'showLayer') {
+        map.getView().fit(source.getExtent(event.data[1]));
       }
     };
   }, []);

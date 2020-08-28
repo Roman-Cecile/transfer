@@ -14,8 +14,8 @@ const mapDispatchToProps = (dispatch) => ({
     // console.log('containers', features);
     dispatch(saveFeatures(features));
   },
-  handleLayers: (layers) => {
-    dispatch(saveLayers(layers));
+  handleLayers: (layerName, layerExtent) => {
+    dispatch(saveLayers(layerName, layerExtent));
   }
 });
 

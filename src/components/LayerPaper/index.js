@@ -22,8 +22,16 @@ const useStyles = makeStyles((theme) => ({
   },
   noLayer: {
     color: 'grey',
-    fontStyle: 'italic'
-  }
+    fontStyle: 'italic',
+  },
+  paperLi: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+
+  layerActive: {
+    cursor: 'pointer',
+  },
 }));
 
 const LayerPaper = ({ layersActive, deleteLayer }) => {
@@ -35,14 +43,15 @@ const LayerPaper = ({ layersActive, deleteLayer }) => {
       {layersActive.length > 0
         ? layersActive.map((layer) => (
           <li className={classes.paperLi}>
-            <span className={classes.layerActive}>
-              {layer}
+            <span className={classes.layerActive} onClick={() => window.postMessage(['showLayer', layer.extent])}>
+              {layer.name}
             </span>
             <CancelOutlinedIcon
+              className={classes.layerActive}
               color="secondary"
               onClick={() => {
                 deleteLayer(layer);
-                window.postMessage(['deleteLayer', layer]);
+                window.postMessage(['deleteLayer', layer.name]);
               }}
             />
           </li>
