@@ -49,11 +49,14 @@ import {
   Typography,
   CssBaseline,
   Divider,
+  Fab,
+  Badge,
 } from '@material-ui/core';
 import {
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
+  InsertDriveFileOutlined as InsertDriveFileOutlinedIcon,
 } from '@material-ui/icons';
 import {
   makeStyles,
@@ -63,6 +66,8 @@ import {
 // Import Component
 import SpeedDial from '../SpeedDial';
 import Menu from '../Menu';
+
+
 
 // Import data GEOJSON
 import data from '../../../public/FT_Chambre_3857.geojson';
@@ -128,10 +133,17 @@ const useStyles = makeStyles((theme) => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   },
+  insertDriveIcon: {
+    margin: '0.5em auto',
+    cursor: 'pointer',
+
+  }
 }));
 
 const Mappy = ({
   handleFeature,
+  handleLayers,
+  layersActive
 }) => {
   const [edit, setEdit] = React.useState(false);
   const [create, setCreate] = React.useState(false);
@@ -158,6 +170,7 @@ const Mappy = ({
     });
     const vector = new VectorLayer({
       source,
+      name: 'FT_Chambre',
       style: new Style({
         fill: new Fill({
           color: 'rgba(255, 255, 255, 0.2)',
@@ -174,7 +187,7 @@ const Mappy = ({
         }),
       }),
     });
-
+    handleLayers(vector.get('name'));
     // Drag and drop file format
     const dragAndDropInteraction = new DragAndDrop({
       formatConstructors: [GeoJSON],
@@ -201,6 +214,7 @@ const Mappy = ({
       map.addLayer(
         new VectorLayer({
           source: vectorSource,
+          name: event.file.name,
           style: new Style({
             fill: new Fill({
               color: 'rgba(255, 255, 255, 0.2)',
@@ -218,6 +232,10 @@ const Mappy = ({
           }),
         }),
       );
+      console.log(event);
+      const layers = event.file.name
+      handleLayers(layers);
+
       map.getView().fit(vectorSource.getExtent());
     });
 
@@ -254,6 +272,11 @@ const Mappy = ({
     window.onmessage = (event) => {
       if (event.data[0] === 'deleteOneFeature') {
         source.getFeatures().forEach((feature) => feature.get('name') === event.data[1] && source.removeFeature(feature));
+      }
+      else if (event.data[0] === 'deleteLayer') {
+        // map.getFeatures().forEach((feature) => console.log(feature));
+        // console.log(event.data[1]);
+        map.getLayers().forEach((layer) => layer.get('name') === event.data[1] && map.removeLayer(layer));
       }
       else if (event.data[0] === 'deleteAllFeatures') {
         selectedFeatures.forEach((feature) => source.removeFeature(feature));
@@ -343,8 +366,23 @@ const Mappy = ({
           </div>
           <Divider />
           {open
-            ? <Menu />
-            : <SpeedDial disabledCreate={create} disabledEdit={edit} drawerState={open} />}
+            ? (
+              <List>
+                <ListItem>
+                  <Menu />
+                </ListItem>
+              </List>
+            )
+            : (
+              <>
+                <Badge color="secondary" overlap="circle" badgeContent={layersActive.length}>
+                  <Fab color="primary" className={classes.insertDriveIcon} onClick={handleDrawerOpen} >
+                    <InsertDriveFileOutlinedIcon />
+                  </Fab>
+                </Badge>
+                <SpeedDial disabledCreate={create} disabledEdit={edit} drawerState={open} />
+              </>
+            )}
         </Drawer>
       </div>
       <div

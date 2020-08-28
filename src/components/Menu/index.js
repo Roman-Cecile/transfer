@@ -6,106 +6,122 @@ import {
   Menu,
   MenuItem,
   Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
 } from '@material-ui/core';
-import {
-  makeStyles,
-  useTheme,
-  withStyles,
-} from '@material-ui/core/styles';
+import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
 import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   Gesture as GestureIcon,
+  Inbox as InboxIcon,
+  Add as CreateIcon,
+  Layers as LayersIcon,
+  Create as EditIcon,
+  ExpandLess,
+  ExpandMore,
 } from '@material-ui/icons';
 
 // Import Component
 import CreateMenu from './Create';
 import EditMenu from './Edit';
 
-const StyledMenu = withStyles({
-  paper: {
-    border: '1px solid #d3d4d5',
-  },
-})((props) => (
-  <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'center',
-    }}
-    transformOrigin={{
-      vertical: 'right',
-      horizontal: 'top',
-    }}
-    {...props}
-  />
-));
+// Import container
+import LayerPaper from '../../containers/LayerPaper';
 
 const useStyles = makeStyles((theme) => ({
-  buttonText: {
-    marginLeft: '1em',
-    marginRight: '0.5em',
+  nested: {
+    paddingLeft: theme.spacing(5),
+    margin: '-0.5em',
   },
-  button: {
-    width: '100%',
-    margin: '0.5em auto',
+  layerPaper: {
+    paddingLeft: theme.spacing(5),
+    marginBottom: theme.spacing(3),
   },
-  listMenuItem: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  menuIcon: {
-    margin: '0.5em',
-  },
+  list: {
+    minWidth: theme.spacing(10),
+    maxWidth: 178
+  }
 }));
 
 const MenuFeatures = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const [open, setOpen] = React.useState(false);
 
-  const handleCloseAnchor = () => {
-    setAnchorEl(null);
+  const handleClick = () => {
+    setOpen(!open);
   };
-  const actions = [
-    { icon: <CreateMenu />, name: 'Create' },
-    { icon: <EditMenu />, name: 'Edit' },
-  ];
   const classes = useStyles();
+
+  const buttonsFeature = [
+    {
+      type: (
+        <ListItem button className={classes.nested}>
+          <ListItemIcon>
+            <CreateIcon />
+          </ListItemIcon>
+          <ListItemText primary={<CreateMenu />} />
+        </ListItem>
+      ),
+      name: 'Create',
+    },
+    {
+      type: (
+        <ListItem button className={classes.nested}>
+          <ListItemIcon>
+            <EditIcon />
+          </ListItemIcon>
+          <ListItemText primary={<EditMenu />} />
+        </ListItem>
+      ),
+      name: 'Edit',
+    },
+  ];
+
+  const actions = [
+    {
+      title: <LayersIcon color="primary" />,
+      name: 'Open Layers',
+      content: (
+        <div className={classes.layerPaper}>
+          <LayerPaper />
+        </div>
+      ),
+    },
+    {
+      title: <GestureIcon color="primary" />,
+      name: 'Features',
+      content: buttonsFeature.map((button) => button.type),
+    },
+  ];
 
   return (
     <>
-      <Button
-        aria-controls="customized-menu"
-        aria-haspopup="true"
-        onClick={handleClick}
-        className={classes.button}
-      >
-        <GestureIcon color="primary" />
-        <span
-          className={classes.buttonText}
-        >
-          features
-        </span>
-        <KeyboardArrowDownIcon />
-      </Button>
-      <StyledMenu
-        id="customized-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleCloseAnchor}
-      >
-
-        {actions.map((action) => (
+      <List className={classes.list}>
+        {actions.map((action) => (action.name === 'Features' ? (
           <>
-            <MenuItem onClick={handleCloseAnchor}>
-              {action.icon}
-            </MenuItem>
+            <ListItem button onClick={handleClick}>
+              <ListItemIcon>{action.title}</ListItemIcon>
+              <ListItemText primary={action.name} />
+              {open ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {action.content}
+              </List>
+            </Collapse>
           </>
-        ))}
-      </StyledMenu>
+        ) : (
+          <>
+            <ListItem>
+              <ListItemIcon>{action.title}</ListItemIcon>
+              <ListItemText primary={action.name} />
+            </ListItem>
+            {action.content}
+          </>
+        )))}
+      </List>
     </>
   );
 };
