@@ -1,15 +1,14 @@
 import React from 'react';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import { Vector as VectorSource } from 'ol/source';
 
 // == Import material UI
-import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
-import { Slide } from '@material-ui/core';
+import { Slide, Paper } from '@material-ui/core';
 
 // == Composant
 import Mappy from '../../containers/Mappy';
+import PaperImportedLayer from '../../containers/ImportedLayers';
 
 import './styles.scss';
 
@@ -30,9 +29,22 @@ const useStyles = makeStyles((theme) => ({
     position: 'sticky',
     left: '2000em',
   },
+  paper: {
+    width: '15%',
+    position: 'fixed',
+    right: 15,
+    top: 100,
+    zIndex: '20',
+
+  },
 }));
 
-const App = ({ featuresSelected, deleteFeature, deleteAllFeatures }) => {
+const App = ({
+  featuresSelected,
+  deleteFeature,
+  deleteAllFeatures,
+  importedLayer,
+}) => {
   const classes = useStyles();
   return (
     <>
@@ -68,6 +80,11 @@ const App = ({ featuresSelected, deleteFeature, deleteAllFeatures }) => {
               ))
               : null}
           </ul>
+        </Paper>
+      </Slide>
+      <Slide in={importedLayer.length > 0} direction="left">
+        <Paper className={classes.paper}>
+          <PaperImportedLayer />
         </Paper>
       </Slide>
 

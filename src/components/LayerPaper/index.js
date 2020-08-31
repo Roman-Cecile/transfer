@@ -7,8 +7,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper, Divider } from '@material-ui/core';
 import {
-  CancelOutlined as CancelOutlinedIcon,
-  LayersRounded as LayersRoundedIcon,
+  Clear as ClearIcon,
 } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +45,7 @@ const LayerPaper = ({ layersActive, deleteLayer }) => {
             <span className={classes.layerActive} onClick={() => window.postMessage(['showLayer', layer.extent])}>
               {layer.name}
             </span>
-            <CancelOutlinedIcon
+            <ClearIcon
               className={classes.layerActive}
               color="secondary"
               onClick={() => {

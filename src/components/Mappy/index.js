@@ -156,9 +156,8 @@ const Mappy = ({
   handleFeature,
   handleLayers,
   handleProperties,
-  properties,
   layersActive,
-  coordinates,
+  handleImportedLayers,
 }) => {
   const [top, setTop] = React.useState(0);
   const [left, setLeft] = React.useState(0);
@@ -286,6 +285,7 @@ const Mappy = ({
       );
       const layerExtent = event.projection.getExtent();
       handleLayers(fileName, layerExtent);
+      handleImportedLayers(fileName, layerExtent);
 
       map.getView().fit(vectorSource.getExtent());
     });

@@ -6,6 +6,7 @@ import { deleteFeature, deleteAllFeatures } from '../../action/deleteFeatureActi
 
 const mapStateToProps = (state) => ({
   featuresSelected: state.featureReducer.features,
+  importedLayer: state.layerReducer.importedLayers,
 });
 
 const mapDispatchToProps = (dispatch) => ({

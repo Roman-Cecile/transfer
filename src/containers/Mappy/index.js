@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
 import { saveFeatures } from '../../action/selectFeatureAction';
-import { saveLayers, saveProperties } from '../../action/saveLayersAction';
+import { saveLayers, saveProperties, saveImportedLayers } from '../../action/saveLayersAction';
 import Mappy from '../../components/Mappy';
 
 const mapStateToProps = (state) => ({
@@ -21,6 +21,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   handleProperties: (properties, coordinates) => {
     dispatch(saveProperties(properties, coordinates));
+  },
+  handleImportedLayers: (layerName, layerExtent) => {
+    dispatch(saveImportedLayers(layerName, layerExtent));
   },
 });
 
