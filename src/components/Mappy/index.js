@@ -5,11 +5,13 @@ import clsx from 'clsx';
 // Import OpenLayer \\
 import Map from 'ol/Map';
 import View from 'ol/View';
+import Overlay from 'ol/Overlay';
 import {
   Circle as CircleStyle,
   Fill,
   Stroke,
   Style,
+  Icon,
 } from 'ol/style';
 import {
   Draw,
@@ -66,8 +68,10 @@ import {
 // Import Component
 import SpeedDial from '../SpeedDial';
 import Menu from '../Menu';
+import image from '../../../public/image.png';
 
-
+// Import container
+import TablePop from '../../containers/TablePop';
 
 // Import data GEOJSON
 import data from '../../../public/FT_Chambre_3857.geojson';
@@ -137,14 +141,27 @@ const useStyles = makeStyles((theme) => ({
     margin: '0.5em auto',
     cursor: 'pointer',
 
-  }
+  },
+  olPopup: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    padding: 15,
+    bottom: 12,
+    left: -50,
+    minWidth: 280,
+  },
 }));
 
 const Mappy = ({
   handleFeature,
   handleLayers,
-  layersActive
+  handleProperties,
+  properties,
+  layersActive,
+  coordinates,
 }) => {
+  const [top, setTop] = React.useState(0);
+  const [left, setLeft] = React.useState(0);
   const [edit, setEdit] = React.useState(false);
   const [create, setCreate] = React.useState(false);
   const theme = useTheme();
@@ -162,6 +179,22 @@ const Mappy = ({
     let draw;
     let snap;
     let modify;
+    const container = document.getElementById('popup');
+    // const iconFeature = new Feature(new Point([0, 0]));
+
+    // const tablePop = new VectorLayer({
+    //   style(feature) {
+    //     return feature.get('style');
+    //   },
+    //   source: new VectorSource({ features: [iconFeature] }),
+    // });
+    const overlay = new Overlay({
+      element: container,
+      autoPan: true,
+      autoPanAnimation: {
+        duration: 250,
+      },
+    });
     const raster = new TileLayer({
       source: new OSM(),
     });
@@ -197,6 +230,7 @@ const Mappy = ({
     const map = new Map({
       interactions: defaultInteractions().extend([dragAndDropInteraction]),
       layers: [raster, vector],
+      overlays: [overlay],
       target: 'map',
       controls: olControl.defaults({ rotate: false }),
       view: new View({
@@ -205,16 +239,33 @@ const Mappy = ({
         extent: [-1249198.2873332978, 5142345.212601059, 1849198.2873332978, 6657654.787398941],
       }),
     });
-
+    map.on('click', (evt) => {
+      // console.log(map.getFeaturesAtPixel(evt.pixel).length);
+      if (map.getFeaturesAtPixel(evt.pixel).length) {
+        const coordinate = map.getCoordinateFromPixel(evt.pixel);
+        overlay.setPosition(coordinate);
+        const pixelFeatures = map.getFeaturesAtPixel(evt.pixel);
+        setTop(evt.pixel[1]);
+        setLeft(evt.pixel[0]);
+        handleProperties(pixelFeatures[0].getProperties());
+      }
+      else {
+        overlay.setPosition(undefined);
+      }
+    });
     // Event Drag and drop
     dragAndDropInteraction.on('addfeatures', (event) => {
       const vectorSource = new VectorSource({
         features: event.features,
       });
+      const indexOfExtention = event.file.name.length - 8;
+      const splitFileName = event.file.name.split('');
+      const removeExtention = splitFileName.slice(0, indexOfExtention);
+      const fileName = removeExtention.join('');
       map.addLayer(
         new VectorLayer({
           source: vectorSource,
-          name: event.file.name,
+          name: fileName,
           extent: event.projection.getExtent(),
           style: new Style({
             fill: new Fill({
@@ -233,10 +284,8 @@ const Mappy = ({
           }),
         }),
       );
-      console.log(event);
-      const layerName = event.file.name;
       const layerExtent = event.projection.getExtent();
-      handleLayers(layerName, layerExtent);
+      handleLayers(fileName, layerExtent);
 
       map.getView().fit(vectorSource.getExtent());
     });
@@ -245,6 +294,7 @@ const Mappy = ({
     // console.log(map.getView().calculateExtent());
     const select = new Select();
     map.addInteraction(select);
+
     const selectedFeatures = select.getFeatures();
     const dragBox = new DragBox({
       source,
@@ -310,6 +360,7 @@ const Mappy = ({
           }
           else if (event.data[0] === 'escape') {
             setCreate(false);
+            overlay.setPosition(undefined)
             return draw.finishDrawing();
           }
         };
@@ -323,9 +374,9 @@ const Mappy = ({
       }
     };
   }, []);
-
   return (
     <>
+
       <div className={classes.root}>
         <CssBaseline />
         <AppBar
@@ -381,7 +432,7 @@ const Mappy = ({
             : (
               <>
                 <Badge color="secondary" overlap="circle" badgeContent={layersActive.length}>
-                  <Fab color="primary" className={classes.insertDriveIcon} onClick={handleDrawerOpen} >
+                  <Fab color="primary" className={classes.insertDriveIcon} onClick={handleDrawerOpen}>
                     <InsertDriveFileOutlinedIcon />
                   </Fab>
                 </Badge>
@@ -396,10 +447,18 @@ const Mappy = ({
       {
         width: '100%',
         height: '100vh',
-        marginTop: '3em',
       }
     }
       />
+
+      <div
+        id="popup"
+        style={{
+          zIndex: 1500, position: 'absolute',
+        }}
+      >
+        <TablePop />
+      </div>
     </>
 
   );

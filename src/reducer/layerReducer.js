@@ -1,9 +1,11 @@
-import { SAVE_LAYERS } from '../action/saveLayersAction';
+import { SAVE_LAYERS, SAVE_PROPERTIES } from '../action/saveLayersAction';
 import { DELETE_LAYER } from '../action/deleteLayerAction';
 
 
 export const initialState = {
   layers: [],
+  properties: {},
+  coordinates: [],
 };
 
 const LayerReducer = (state = initialState, action = {}) => {
@@ -26,7 +28,12 @@ const LayerReducer = (state = initialState, action = {}) => {
         layers: [...state.layers],
       };
     }
-
+    case SAVE_PROPERTIES:
+      return {
+        ...state,
+        properties: [action.properties],
+        coordinates: [action.coordinates],
+      };
     default:
       return state;
   }
