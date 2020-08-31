@@ -360,7 +360,7 @@ const Mappy = ({
           }
           else if (event.data[0] === 'escape') {
             setCreate(false);
-            overlay.setPosition(undefined)
+            overlay.setPosition(undefined);
             return draw.finishDrawing();
           }
         };

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ImportedLayer = ({ importedLayers }) => {
+const ImportedLayer = ({ importedLayers, deleteImportedLayer }) => {
   const classes = useStyles();
   return (
     <>
@@ -35,12 +35,25 @@ const ImportedLayer = ({ importedLayers }) => {
           ? importedLayers.map((layer) => (
             <li
               className={classes.liStyle}
-              onClick={() => window.postMessage(['showLayer', layer.extent])}
+
             >
-              <span style={{ cursor: 'pointer' }}>{layer.name}</span>
+              <span
+                onClick={() => {
+                  window.postMessage(['showLayer', layer.extent]);
+                }}
+                style={{ cursor: 'pointer' }}
+              >{layer.name}
+              </span>
               <div>
                 <VisibilityIcon style={{ cursor: 'pointer' }} />
-                <ClearIcon color="secondary" style={{ cursor: 'pointer' }} />
+                <ClearIcon
+                  onClick={() => {
+                    window.postMessage(['deleteLayer', layer.name]);
+                    deleteImportedLayer(layer);
+                  }}
+                  color="secondary"
+                  style={{ cursor: 'pointer' }}
+                />
               </div>
             </li>
           ))
